@@ -8,3 +8,5 @@ val Yellow = Color(0xFFFFAE47)
 val Text = Color(0xFF91919A)
 val Background = Color(0xFFFAFAFA)
 val CardBackground = Color(0xFFFFFFFF)
+val CompletedGreen = Color(0xFF2E7D6A) // Verde oscuro inspirado en Green
+val NotCompletedRed = Color(0xFFE57373) // Rojo claro, menos agresivo
