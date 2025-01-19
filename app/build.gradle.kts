@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt") // Necesario para la anotación @HiltViewModel
     id("com.google.dagger.hilt.android") // Plugin para Hilt
 }
@@ -68,7 +69,12 @@ dependencies {
     // Hilt para Jetpack Compose (opcional)
     implementation(libs.hilt.navigation.compose)
     //Coroutines
-    implementation(libs.kotlin.coroutines.core)
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    //Navigation Compose
+    implementation(libs.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
+
 }
