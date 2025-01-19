@@ -6,11 +6,15 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data object HomeScreen{
+data object HomeScreenRoute{
 }
 
 @Serializable
-data class DetailScreen(
+data class DetailScreenRoute(
     val id: Int
 )
+
+@Serializable
+data object NewTaskScreenRoute{
+}
 

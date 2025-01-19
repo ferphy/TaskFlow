@@ -1,11 +1,15 @@
 package com.example.diaryapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.diaryapp.screens.HomeScreen
+import com.example.diaryapp.screens.details.DetailScreen
+import com.example.diaryapp.screens.home.HomeScreen
+import com.example.diaryapp.screens.home.HomeViewModel
+import com.example.diaryapp.screens.newTask.NewTaskScreen
 
 @Composable
 fun DiaryAppNavigation(){
@@ -14,17 +18,26 @@ fun DiaryAppNavigation(){
 
     NavHost(
         navController = navController,
-        startDestination = HomeScreen
+        startDestination = HomeScreenRoute
     ){
-        composable<HomeScreen>{
-            HomeScreen()
+        composable<HomeScreenRoute>{
+
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            HomeScreen(
+                homeViewModel = homeViewModel,
+                navController = navController
+            )
         }
 
-        composable<DetailScreen>{
-            val args = it.toRoute<DetailScreen>()
+        composable<DetailScreenRoute>{
+            val args = it.toRoute<DetailScreenRoute>()
             DetailScreen(
                 id = args.id
             )
+        }
+
+        composable<NewTaskScreenRoute>{
+            NewTaskScreen()
         }
 
     }

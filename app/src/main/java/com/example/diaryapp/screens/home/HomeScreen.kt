@@ -1,35 +1,27 @@
-package com.example.diaryapp.screens
+package com.example.diaryapp.screens.home
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draganddrop.DragAndDropEvent
-import androidx.compose.ui.draganddrop.DragAndDropTarget
-import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.diaryapp.data.ToDoItem
 import com.example.diaryapp.data.getDummyData
 import com.example.diaryapp.utils.LazyComponentRowWithPlaceholder
@@ -43,15 +35,19 @@ import com.example.diaryapp.widgets.ToDoCard
 import com.example.diaryapp.widgets.WeekDaysHomeCard
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    homeViewModel: HomeViewModel,
+    navController: NavController
+) {
     val weekDays = getWeekDays()
     var selectedDayIndex by remember { mutableIntStateOf(-1) } // Controlar el día seleccionado
 
     // Listas mutables para "To Do" y "In Progress"
     val toDoTasks = remember { mutableStateListOf(*getDummyData().toTypedArray()) }
     val inProgressTasks = remember { mutableStateListOf<ToDoItem>() }
+    //ESTOS SON LOS VERDADEROS ELEMENTOS QUE TENGO QUE MOSTAR
+    val taskList = homeViewModel.taskList.collectAsState().value
 
     val onDragStart: (String) -> Unit = { data ->
         Log.d("HomeScreen", "Arrastrando: $data")
@@ -82,7 +78,9 @@ fun HomeScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            FloatingActionButtonHome()
+            FloatingActionButtonHome(
+                navController = navController
+            )
         }
     ) { innerPadding ->
         Surface(

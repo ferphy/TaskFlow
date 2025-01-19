@@ -11,12 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.diaryapp.navigation.NewTaskScreenRoute
 
 @Preview
 @Composable
-fun FloatingActionButtonHome(){
+fun FloatingActionButtonHome(navController: NavController) {
     FloatingActionButton(
-        onClick = { /* Acción al presionar el botón */ },
+        onClick = {
+            navController.navigate(NewTaskScreenRoute)
+        },
         shape = CircleShape, // Forma circular
         containerColor = Color(0xFFFFAE47), // Naranja
         contentColor = Color.White // Color del ícono
