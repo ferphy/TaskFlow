@@ -1,11 +1,12 @@
 package com.example.diaryapp.screens
-
 import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,47 +17,72 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draganddrop.DragAndDropEvent
+import androidx.compose.ui.draganddrop.DragAndDropTarget
+import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.diaryapp.ui.theme.dmSansFamily
+import com.example.diaryapp.data.ToDoItem
+import com.example.diaryapp.data.getDummyData
+import com.example.diaryapp.utils.getWeekDays
 import com.example.diaryapp.widgets.FloatingActionButtonHome
 import com.example.diaryapp.widgets.HomeTopAppBar
 import com.example.diaryapp.widgets.InProgressCard
+import com.example.diaryapp.widgets.TaskToDoTitle
 import com.example.diaryapp.widgets.TitleOfTheSection
 import com.example.diaryapp.widgets.ToDoCard
 import com.example.diaryapp.widgets.WeekDaysHomeCard
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
-
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun HomeScreen() {
-    val taskNumber by remember { mutableIntStateOf(5) }
     val weekDays = getWeekDays()
     var selectedDayIndex by remember { mutableIntStateOf(-1) } // Controlar el día seleccionado
-    val dummyData = getDummyData()
+
+    // Listas mutables para "To Do" y "In Progress"
+    val toDoTasks = remember { mutableStateListOf(*getDummyData().toTypedArray()) }
+    val inProgressTasks = remember { mutableStateListOf<ToDoItem>() }
+
+    val onDragStart: (String) -> Unit = { data ->
+        Log.d("HomeScreen", "Arrastrando: $data")
+    }
+
+    val onDrop: (String) -> Unit = { data ->
+        val properties = data.split(";").associate {
+            val (key, value) = it.split("=")
+            key to value
+        }
+
+        val taskTitle = properties["title"]
+        val task = toDoTasks.find { it.title == taskTitle }
+        if (task != null) {
+            toDoTasks.remove(task)
+            inProgressTasks.add(task)
+
+            Log.d("HomeScreen", "Estado actual de toDoTasks: ${
+                toDoTasks.joinToString(separator = "\n") { task_items ->
+                    "Title: ${task_items.title}, Type: ${task_items.type}, Date: ${task_items.date}, Progress: ${task_items.progress}"
+                }
+            }")
+        } else {
+            Log.d("HomeScreen", "No se encontró la tarea: $taskTitle")
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButtonHome()
         }
-
     ) { innerPadding ->
         Surface(
             modifier = Modifier
@@ -69,147 +95,128 @@ fun HomeScreen() {
                     .verticalScroll(rememberScrollState())
             ) {
                 HomeTopAppBar(modifier = Modifier.padding(horizontal = 10.dp))
-                Spacer(modifier = Modifier.padding(10.dp))
-                TaskToDoTitle(taskNumber = taskNumber,modifier = Modifier.padding(horizontal = 10.dp))
-                Spacer(modifier = Modifier.padding(10.dp))
+                TaskToDoTitle(taskNumber = toDoTasks.size, modifier = Modifier.padding(horizontal = 10.dp))
+
+                // Semana
                 LazyRow(
-                    modifier = Modifier.padding(2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.padding(vertical = 15.dp, horizontal = 2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(weekDays.size) { index ->
                         val (dayName, dayNumber) = weekDays[index]
-                        Box(Modifier
-                            .height(80.dp)
-                            .width(55.dp)) {
-                            WeekDaysHomeCard(
-                                dayName = dayName,
-                                dayNumber = dayNumber,
-                                isSelected = index == selectedDayIndex, // Cambia solo si es el seleccionado
-                            ) {
-                                selectedDayIndex = index // Actualiza el índice seleccionado
-                                Log.d("HomeScreen", "Día seleccionado: $dayName")
-                            }
+                        WeekDaysHomeCard(
+                            dayName = dayName,
+                            dayNumber = dayNumber,
+                            isSelected = index == selectedDayIndex, // Cambia solo si es el seleccionado
+                        ) {
+                            selectedDayIndex = index // Actualiza el índice seleccionado
+                            Log.d("HomeScreen", "Día seleccionado: $dayName")
                         }
                     }
                 }
+
+                // Section "To Do"
                 TitleOfTheSection(
                     title = "To do",
-                    taskNumber = 7,
+                    taskNumber = toDoTasks.size,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
-                LazyRow(
-                    modifier = Modifier.padding(vertical = 5.dp, horizontal = 2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                ) {
-                    items(dummyData) { item ->
-                        ToDoCard(
-                            type = item.type,
-                            title = item.title,
-                            date = item.date
-                        )
-                    }
+                LazyComponentRowWithPlaceholder(
+                    toDoTasks,
+                    onDrop = onDrop
+                ) { item ->
+                    ToDoCard(
+                        item = item, // Pasa directamente el objeto ToDoItem
+                        onDragStart = onDragStart
+                    )
                 }
 
+                // Section "In Progress"
                 TitleOfTheSection(
                     title = "In progress",
-                    taskNumber = 5,
+                    taskNumber = inProgressTasks.size,
                     modifier = Modifier.padding(horizontal = 10.dp),
                 )
-                LazyRow(
-                    modifier = Modifier.padding(vertical = 5.dp, horizontal = 2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                ) {
-                    items(dummyData) { item ->
-                        InProgressCard(
-                            type = item.type,
-                            title = item.title,
-                            date = item.date,
-                            progress = item.progress
-                        )
-                    }
-                }
-                TitleOfTheSection(
-                    title = "Completed!",
-                    taskNumber = 7,
-                    modifier = Modifier.padding(horizontal = 10.dp),
-                )
-                LazyRow(
-                    modifier = Modifier.padding(vertical = 5.dp, horizontal = 2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
-                ) {
-                    items(dummyData) { item ->
-                        ToDoCard(
-                            type = item.type,
-                            title = item.title,
-                            date = item.date
-                        )
-                    }
+                LazyComponentRowWithPlaceholder(
+                    tasks = inProgressTasks,
+                    onDrop = onDrop
+                ) { item ->
+                    InProgressCard(
+                        type = item.type,
+                        title = item.title,
+                        date = item.date,
+                        progress = item.progress,
+                        onDrop = onDrop
+                    )
                 }
 
+                // Section "Completed"
+                TitleOfTheSection(
+                    title = "Completed!",
+                    taskNumber = 0, // No hay tareas completadas aún
+                    modifier = Modifier.padding(horizontal = 10.dp),
+                )
+                LazyComponentRowWithPlaceholder(
+                    emptyList<ToDoItem>(),
+                    onDrop = onDrop
+                ) { item ->
+                    ToDoCard(
+                        item = item, // Pasa directamente el objeto ToDoItem
+                        onDragStart = onDragStart
+                    )
+                }
             }
         }
     }
 }
 
-data class ToDoItem(
-    val type: String,
-    val title: String,
-    val date: String,
-    val progress: Float
-)
 
-fun getDummyData(): List<ToDoItem> {
-    return listOf(
-        ToDoItem(type = "Hobbies", title = "Redesign the Web Screen", date = "Mon, 7 March", progress = 0.58f),
-        ToDoItem(type = "Project", title = "Complete the App Backend", date = "Tue, 8 March", progress = 0.70f),
-        ToDoItem(type = "Hobbies", title = "Learn a New Song", date = "Wed, 9 March", progress = 0.35f),
-        ToDoItem(type = "Chores", title = "Grocery Shopping", date = "Thu, 10 March", progress = 0.27f),
-        ToDoItem(type = "Project", title = "Deploy the Website", date = "Fri, 11 March", progress = 0.32f),
-        ToDoItem(type = "Hobbies", title = "Sketch a Portrait", date = "Sat, 12 March", progress = 0.12f),
-        ToDoItem(type = "Chores", title = "Clean the Garage", date = "Sun, 13 March", progress = 0.5f)
-    )
-}
-
-fun getWeekDays(): List<Pair<String, String>> {
-    val calendar = Calendar.getInstance()
-    val dateFormatDayName = SimpleDateFormat("EEE", Locale.getDefault()) // Ej: "Mon"
-    val dateFormatDayNumber = SimpleDateFormat("d", Locale.getDefault()) // Ej: "12"
-
-    // Aseguramos que comience desde el lunes
-    calendar.firstDayOfWeek = Calendar.MONDAY
-    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-
-    // Generamos la lista de días de la semana
-    return (0..6).map {
-        val dayName = dateFormatDayName.format(calendar.time)
-        val dayNumber = dateFormatDayNumber.format(calendar.time)
-        calendar.add(Calendar.DAY_OF_YEAR, 1) // Pasar al siguiente día
-        Pair(dayName, dayNumber)
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun <T> LazyComponentRowWithPlaceholder(
+    tasks: List<T>,
+    onDrop: (String) -> Unit,
+    content: @Composable (T) -> Unit
+) {
+    LazyRow(
+        modifier = Modifier.padding(vertical = 15.dp, horizontal = 2.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        if (tasks.isEmpty()) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(125.dp)
+                        .background(Color.Transparent) // Invisible
+                        .dragAndDropTarget(
+                            shouldStartDragAndDrop = { true },
+                            target = object : DragAndDropTarget {
+                                override fun onDrop(event: DragAndDropEvent): Boolean {
+                                    val draggedData = event.toAndroidDragEvent().clipData.getItemAt(0).text
+                                    Log.d("Placeholder", "Recibido: $draggedData")
+                                    onDrop(draggedData.toString())
+                                    return true
+                                }
+                            }
+                        )
+                )
+            }
+        } else {
+            // Usar claves únicas para evitar problemas de reutilización
+            items(tasks, key = { task -> task.hashCode() }) { task ->
+                content(task)
+            }
+        }
     }
 }
 
-@Composable
-fun TaskToDoTitle(
-    taskNumber: Int,
-    modifier: Modifier = Modifier
-) {
-    Text(
-        modifier = modifier,
-        fontSize = 24.sp,
-        fontFamily = dmSansFamily,
-        fontWeight = FontWeight.Bold,
-        text = buildAnnotatedString {
-            append("You’ve got ")
-            withStyle(style = SpanStyle(color = Color(0xFFFFAE47))) { // Cambia el color aquí
-                append("$taskNumber")
-            }
-            append(" task today")
-        },
-        color = Color(0xFF074F60) // Este color será para el texto que no está en `taskNumber`
-    )
-}
+
+//podría implementar una unica LazyRow para no tener que meterla 3 veces
+
+
+
 
 

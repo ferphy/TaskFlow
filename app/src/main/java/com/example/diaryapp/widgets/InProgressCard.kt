@@ -1,6 +1,10 @@
 package com.example.diaryapp.widgets
 
+import android.content.ClipDescription
+import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,15 +17,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draganddrop.DragAndDropEvent
+import androidx.compose.ui.draganddrop.DragAndDropTarget
+import androidx.compose.ui.draganddrop.mimeTypes
+import androidx.compose.ui.draganddrop.toAndroidDragEvent
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -30,13 +38,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.diaryapp.ui.theme.dmSansFamily
 
+
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun InProgressCard(
-    type: String = "Project",
-    title: String = "Redesign the Web Screen",
-    date: String = "Mon, 7 March",
-    progress: Float = 0.58f
+    type: String = "Hobbies",
+    title: String = "Default Title",
+    date: String = "Default Date",
+    progress: Float = 0f,
+    onDrop: (String) -> Unit = {}
 ) {
     val (cardColor, textColor, progressColor) = if (type == "Project") {
         Triple(Color(0xFFFFFFFF), Color(0xFF074F60), Color(0xFFFFAE47))
@@ -45,8 +56,29 @@ fun InProgressCard(
     } else {
         Triple(Color(0xFF074F60), Color(0xFFFAFAFA), Color(0xFFFFAE47))
     }
+
+    //DROP
+    val callback = remember {
+        object : DragAndDropTarget {
+            override fun onDrop(event: DragAndDropEvent): Boolean {
+                val draggedData = event.toAndroidDragEvent().clipData.getItemAt(0).text
+                Log.d("InProgressCard", "Datos recibidos: ${event.toAndroidDragEvent().clipData.getItemAt(0).text}")
+                onDrop(draggedData.toString()) // Llama al callback recibido
+                return true
+            }
+        }
+    }
+
+    val modifier = Modifier.dragAndDropTarget(
+        shouldStartDragAndDrop = { event ->
+            Log.d("InProgressCard", "Tipo MIME: ${event.mimeTypes()}")
+            event.mimeTypes().contains(ClipDescription.MIMETYPE_TEXT_PLAIN)
+        }, target = callback
+    )
+
+
     Card(
-        modifier = Modifier
+        modifier = modifier
             .width(280.dp)
             .height(140.dp),
         shape = RoundedCornerShape(16.dp),

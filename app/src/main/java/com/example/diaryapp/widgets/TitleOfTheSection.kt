@@ -29,12 +29,12 @@ import com.example.diaryapp.ui.theme.dmSansFamily
 fun TitleOfTheSection(
     title: String = "To do",
     taskNumber: Int = 7,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ){
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(70.dp)
+            .height(40.dp)
             .background(Color(0xFFFAFAFA))
     ){
         Row(
