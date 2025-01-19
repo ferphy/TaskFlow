@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt") // Necesario para la anotación @HiltViewModel
+    id("com.google.dagger.hilt.android") // Plugin para Hilt
 }
 
 android {
@@ -60,4 +62,13 @@ dependencies {
     implementation(libs.coil.compose)
     //Extended Icons
     implementation (libs.androidx.material.icons.extended)
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    // Hilt para Jetpack Compose (opcional)
+    implementation(libs.hilt.navigation.compose)
+    //Coroutines
+    implementation(libs.kotlin.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 }

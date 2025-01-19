@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.diaryapp.data.ToDoItem
 import com.example.diaryapp.data.getDummyData
+import com.example.diaryapp.utils.LazyComponentRowWithPlaceholder
 import com.example.diaryapp.utils.getWeekDays
 import com.example.diaryapp.widgets.FloatingActionButtonHome
 import com.example.diaryapp.widgets.HomeTopAppBar
@@ -143,10 +144,7 @@ fun HomeScreen() {
                     onDrop = onDrop
                 ) { item ->
                     InProgressCard(
-                        type = item.type,
-                        title = item.title,
-                        date = item.date,
-                        progress = item.progress,
+                        item = item,
                         onDrop = onDrop
                     )
                 }
@@ -170,51 +168,6 @@ fun HomeScreen() {
         }
     }
 }
-
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun <T> LazyComponentRowWithPlaceholder(
-    tasks: List<T>,
-    onDrop: (String) -> Unit,
-    content: @Composable (T) -> Unit
-) {
-    LazyRow(
-        modifier = Modifier.padding(vertical = 15.dp, horizontal = 2.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
-    ) {
-        if (tasks.isEmpty()) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(125.dp)
-                        .background(Color.Transparent) // Invisible
-                        .dragAndDropTarget(
-                            shouldStartDragAndDrop = { true },
-                            target = object : DragAndDropTarget {
-                                override fun onDrop(event: DragAndDropEvent): Boolean {
-                                    val draggedData = event.toAndroidDragEvent().clipData.getItemAt(0).text
-                                    Log.d("Placeholder", "Recibido: $draggedData")
-                                    onDrop(draggedData.toString())
-                                    return true
-                                }
-                            }
-                        )
-                )
-            }
-        } else {
-            // Usar claves únicas para evitar problemas de reutilización
-            items(tasks, key = { task -> task.hashCode() }) { task ->
-                content(task)
-            }
-        }
-    }
-}
-
-
-//podría implementar una unica LazyRow para no tener que meterla 3 veces
 
 
 

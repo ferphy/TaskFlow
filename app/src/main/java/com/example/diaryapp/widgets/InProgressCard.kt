@@ -36,25 +36,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.diaryapp.data.ToDoItem
 import com.example.diaryapp.ui.theme.dmSansFamily
 
 
 @OptIn(ExperimentalFoundationApi::class)
-@Preview
 @Composable
 fun InProgressCard(
-    type: String = "Hobbies",
-    title: String = "Default Title",
-    date: String = "Default Date",
-    progress: Float = 0f,
+    item: ToDoItem,
     onDrop: (String) -> Unit = {}
 ) {
-    val (cardColor, textColor, progressColor) = if (type == "Project") {
-        Triple(Color(0xFFFFFFFF), Color(0xFF074F60), Color(0xFFFFAE47))
-    } else if (type == "Hobbies") {
-        Triple(Color(0xFFFFAE47), Color(0xFFFAFAFA), Color(0xFF074F60))
-    } else {
-        Triple(Color(0xFF074F60), Color(0xFFFAFAFA), Color(0xFFFFAE47))
+
+    val (cardColor, textColor, progressColor) = when (item.type) {
+        "Project" -> Triple(Color(0xFFFFFFFF), Color(0xFF074F60), Color(0xFFFFAE47))
+        "Hobbies" -> Triple(Color(0xFFFFAE47), Color(0xFFFAFAFA), Color(0xFF074F60))
+        else -> Triple(Color(0xFF074F60), Color(0xFFFAFAFA), Color(0xFFFFAE47))
     }
 
     //DROP
@@ -103,7 +99,7 @@ fun InProgressCard(
                     fontSize = 12.sp,
                     fontFamily = dmSansFamily,
                     fontWeight = FontWeight.SemiBold,
-                    text = type,
+                    text = item.type,
                     color = textColor
                 )
                 Icon(
@@ -117,7 +113,7 @@ fun InProgressCard(
                 fontSize = 20.sp,
                 fontFamily = dmSansFamily,
                 fontWeight = FontWeight.Bold,
-                text = title,
+                text = item.title,
                 color = textColor
             )
             // Barra de progreso personalizada
@@ -131,7 +127,7 @@ fun InProgressCard(
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .fillMaxWidth(progress)
+                        .fillMaxWidth(item.progress)
                         .clip(RoundedCornerShape(50))
                         .background(progressColor)
                 )
@@ -141,7 +137,7 @@ fun InProgressCard(
                 fontSize = 12.sp,
                 fontFamily = dmSansFamily,
                 fontWeight = FontWeight.SemiBold,
-                text = "Till $date",
+                text = "Till ${item.date}",
                 color = textColor
             )
 
