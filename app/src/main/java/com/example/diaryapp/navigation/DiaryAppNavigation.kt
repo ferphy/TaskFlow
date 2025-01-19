@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.diaryapp.screens.HomeScreen
 
 @Composable
@@ -18,5 +19,13 @@ fun DiaryAppNavigation(){
         composable<HomeScreen>{
             HomeScreen()
         }
+
+        composable<DetailScreen>{
+            val args = it.toRoute<DetailScreen>()
+            DetailScreen(
+                id = args.id
+            )
+        }
+
     }
 }
