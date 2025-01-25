@@ -36,25 +36,7 @@ Diary App es una aplicación móvil diseñada para ayudarte a organizar tus tare
 - **Jetpack Compose**: Framework moderno para la interfaz de usuario.
 - **Material Design 3**: Para garantizar una experiencia de usuario uniforme.
 
-## 📄 **Estructura del Proyecto**
-
-📂 DiaryApp
- ┣ 📂 app
- ┃ ┣ 📂 src
- ┃ ┃ ┣ 📂 main
- ┃ ┃ ┃ ┣ 📂 java/com/example/diaryapp
- ┃ ┃ ┃ ┃ ┣ 📂 widgets
- ┃ ┃ ┃ ┃ ┃ ┣ GenericConfigurationRow.kt
- ┃ ┃ ┃ ┃ ┃ ┣ GenericDropDownMenu.kt
- ┃ ┃ ┃ ┃ ┃ ┗ TodoList.kt
- ┃ ┃ ┃ ┃ ┣ MainActivity.kt
- ┃ ┃ ┃ ┃ ┗ AppTheme.kt
- ┃ ┃ ┃ ┗ 📂 res
- ┃ ┃ ┃   ┣ 📂 layout
- ┃ ┃ ┃   ┗ 📂 values
- ┗ 📂 build.gradle
-
-## 📄 **Estructura del Proyecto**
+## 📧 ** Contacto**
 
 - **Creador**: Fernando González Laso
 - **Correo Electrónico:**: fernangl08@gmail.com
