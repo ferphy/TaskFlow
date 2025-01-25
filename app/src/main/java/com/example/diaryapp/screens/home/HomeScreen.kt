@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,13 +25,13 @@ import com.example.diaryapp.data.ToDoItem
 import com.example.diaryapp.data.getDummyData
 import com.example.diaryapp.utils.LazyComponentRowWithPlaceholder
 import com.example.diaryapp.utils.getWeekDays
-import com.example.diaryapp.widgets.FloatingActionButtonHome
-import com.example.diaryapp.widgets.HomeTopAppBar
-import com.example.diaryapp.widgets.InProgressCard
-import com.example.diaryapp.widgets.TaskToDoTitle
-import com.example.diaryapp.widgets.TitleOfTheSection
-import com.example.diaryapp.widgets.ToDoCard
-import com.example.diaryapp.widgets.WeekDaysHomeCard
+import com.example.diaryapp.widgets.home.FloatingActionButtonHome
+import com.example.diaryapp.widgets.home.HomeTopAppBar
+import com.example.diaryapp.widgets.home.InProgressCard
+import com.example.diaryapp.widgets.home.TaskToDoTitle
+import com.example.diaryapp.widgets.home.TitleOfTheSection
+import com.example.diaryapp.widgets.home.ToDoCard
+import com.example.diaryapp.widgets.home.WeekDaysHomeCard
 
 @Composable
 fun HomeScreen(

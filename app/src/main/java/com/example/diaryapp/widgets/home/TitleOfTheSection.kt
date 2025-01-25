@@ -1,4 +1,4 @@
-package com.example.diaryapp.widgets
+package com.example.diaryapp.widgets.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
