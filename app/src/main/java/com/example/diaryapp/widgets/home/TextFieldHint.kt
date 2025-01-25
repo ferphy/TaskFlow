@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -46,6 +47,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
+
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -54,6 +57,7 @@ fun TextFieldHint(
     hint: String = "hint",
     visualTransformation: VisualTransformation = VisualTransformation.None,
     onEnterPressed: (String) -> Unit,
+    height: Dp = 60.dp
 ) {
 
     var text by remember { mutableStateOf("") }
@@ -104,9 +108,9 @@ fun TextFieldHint(
                                     animatedVisibilityScope = this@AnimatedContent
                                 )
                                 .fillMaxWidth()
-                                .height(60.dp)
+                                .height(height)
                                 .background(
-                                    color = MaterialTheme.colorScheme.surface,
+                                    color = Color(0xFFE8EDF2),
                                     shape = RoundedCornerShape(10.dp)
                                 )
                                 .border(
@@ -116,17 +120,25 @@ fun TextFieldHint(
                                         alpha = .3f
                                     )
                                 )
-                                .padding(horizontal = 10.dp, vertical = 8.dp),
-                            contentAlignment = Alignment.CenterStart
+                                .padding(horizontal = 10.dp, vertical = 8.dp)
                         ) {
-                            if (!showHintAbove) {
-                                TextAsIndividualLetters(
-                                    animatedContentScope = this@AnimatedContent,
-                                    text = hint,
-                                    style = interiorHintTextStyle(),
-                                )
+                            Column(modifier = Modifier.fillMaxSize()) {
+                                if (!showHintAbove) {
+                                    TextAsIndividualLetters(
+                                        animatedContentScope = this@AnimatedContent,
+                                        text = hint,
+                                        style = interiorHintTextStyle(),
+                                        modifier = Modifier.align(Alignment.Start)
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .align(Alignment.Start)
+                                ) {
+                                    innerTextField()
+                                }
                             }
-                            innerTextField()
                         }
                     }
                 }
@@ -189,9 +201,9 @@ fun textFieldTextStyle() = MaterialTheme.typography.labelLarge.copy(
 @ReadOnlyComposable
 @Composable
 fun exteriorHintTextStyle() = MaterialTheme.typography.labelLarge.copy(
-    fontWeight = FontWeight.Bold,
+    fontWeight = FontWeight.Normal,
     fontSize = 20.sp,
-    color = Color(0xFFFFAE47),
+    color = Color(0xFF055062),
 )
 
 @ReadOnlyComposable
