@@ -1,6 +1,6 @@
-# 🎯 **Diary App**
+# 🎯 **TaskFlow**
 
-Diary App es una aplicación móvil diseñada para ayudarte a organizar tus tareas y subtareas de manera eficiente. Puedes añadir tareas principales, gestionar subtareas, y marcar tus tareas como completadas, todo con una interfaz limpia y minimalista.
+TaskFlow es una aplicación móvil diseñada para ayudarte a organizar tus tareas y subtareas de manera eficiente. Puedes añadir tareas principales, gestionar subtareas, y marcar tus tareas como completadas, todo con una interfaz limpia y minimalista.
 
 ---
 
