@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
@@ -62,6 +63,7 @@ fun TextFieldHint(
 
     var text by remember { mutableStateOf("") }
     val interactionSource = remember { MutableInteractionSource() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val isFocused by interactionSource.collectIsFocusedAsState()
     val showHintAbove by remember {
@@ -145,10 +147,13 @@ fun TextFieldHint(
             }
         },
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done // Configurar la acción del teclado como "Done"
+            imeAction = ImeAction.Done
         ),
         keyboardActions = KeyboardActions(
-            onDone = { onEnterPressed(text) } // Manejar el evento "Done" (Enter)
+            onDone = {
+                keyboardController?.hide()
+                onEnterPressed(text)
+            }
         ),
     )
 }

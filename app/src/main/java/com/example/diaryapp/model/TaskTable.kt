@@ -28,7 +28,7 @@ data class TaskTable (
     val progress: Float,
 
     @ColumnInfo(name = "description")
-    val description: Float,
+    val description: String,
 
     @ColumnInfo(name = "state")
     val state: String,
@@ -42,4 +42,4 @@ data class TaskTable (
     @ColumnInfo(name = "is_completed")
     val isCompleted: Boolean,
 
-)
+    )

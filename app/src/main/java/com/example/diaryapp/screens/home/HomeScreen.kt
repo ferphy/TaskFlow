@@ -33,6 +33,7 @@ import com.example.diaryapp.widgets.home.TitleOfTheSection
 import com.example.diaryapp.widgets.home.ToDoCard
 import com.example.diaryapp.widgets.home.WeekDaysHomeCard
 
+
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
@@ -47,6 +48,8 @@ fun HomeScreen(
 
     //ESTOS SON LOS VERDADEROS ELEMENTOS QUE TENGO QUE MOSTAR
     val taskList = homeViewModel.taskList.collectAsState().value
+
+
 
     val onDragStart: (String) -> Unit = { data ->
         Log.d("HomeScreen", "Arrastrando: $data")

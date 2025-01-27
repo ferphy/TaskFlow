@@ -7,7 +7,7 @@ import com.example.diaryapp.model.Converters
 import com.example.diaryapp.model.TaskDao
 import com.example.diaryapp.model.TaskTable
 
-@Database(entities = [TaskTable::class], version = 2, exportSchema = false)
+@Database(entities = [TaskTable::class], version = 3, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class TaskDatabase: RoomDatabase(){
 

@@ -10,6 +10,7 @@ import com.example.diaryapp.screens.details.DetailScreen
 import com.example.diaryapp.screens.home.HomeScreen
 import com.example.diaryapp.screens.home.HomeViewModel
 import com.example.diaryapp.screens.newTask.NewTaskScreen
+import com.example.diaryapp.screens.newTask.NewTaskViewModel
 
 @Composable
 fun DiaryAppNavigation(){
@@ -37,7 +38,11 @@ fun DiaryAppNavigation(){
         }
 
         composable<NewTaskScreenRoute>{
-            NewTaskScreen()
+            val newTaskViewModel: NewTaskViewModel = hiltViewModel()
+            NewTaskScreen(
+                newTaskViewModel = newTaskViewModel,
+                navController = navController
+            )
         }
 
     }

@@ -19,26 +19,18 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
-    val MIGRATION_1_2 = object : Migration(1, 2) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("ALTER TABLE task_tbl ADD COLUMN state TEXT NOT NULL DEFAULT 'pending'")
-        }
-    }
+    @Singleton
+    @Provides
+    fun provideTaskDao(taskDatabase: TaskDatabase): TaskDao = taskDatabase.taskDao()
 
     @Singleton
     @Provides
-    fun provideTaskDao(taskDatabase: TaskDatabase): TaskDao
-    = taskDatabase.taskDao()
-
-    @Singleton
-    @Provides
-    fun provideAppDatabase(@ApplicationContext context: Context): TaskDatabase
-    = Room.databaseBuilder(
-        context,
-        TaskDatabase::class.java,
-        "tasks_db"
-    ).fallbackToDestructiveMigration()
-        .addMigrations(MIGRATION_1_2)
-        .build()
+    fun provideAppDatabase(@ApplicationContext context: Context): TaskDatabase =
+        Room.databaseBuilder(
+            context,
+            TaskDatabase::class.java,
+            "tasks_db"
+        ).fallbackToDestructiveMigration()
+            .build()
 
 }

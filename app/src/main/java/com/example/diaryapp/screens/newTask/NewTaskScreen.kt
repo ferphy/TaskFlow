@@ -1,42 +1,36 @@
 package com.example.diaryapp.screens.newTask
 
-import android.app.DatePickerDialog
-import androidx.compose.foundation.background
+import android.util.Log
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableFloatState
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,40 +39,48 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.diaryapp.model.TaskTable
 import com.example.diaryapp.ui.theme.dmSansFamily
 import com.example.diaryapp.widgets.GenericConfigurationRow
 import com.example.diaryapp.widgets.GenericTopAppBar
 import com.example.diaryapp.widgets.home.TextFieldHint
 import com.example.diaryapp.widgets.newTask.DatePickerDialogWidget
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.runtime.*
-
-import androidx.compose.ui.text.TextStyle
-
-import androidx.compose.ui.text.input.ImeAction
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewTaskScreen() {
+fun NewTaskScreen(
+    navController: NavController,
+    newTaskViewModel: NewTaskViewModel
+) {
 
-    val firstField = remember { mutableStateOf("") }
-    val firstFocusRequester = remember { FocusRequester() }
-    val secondFocusRequester = remember { FocusRequester() }
+    val titleField = remember { mutableStateOf("") }
+    val descriptionField = remember { mutableStateOf("") }
     var showDatePicker by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf("") }
     var selectedReminder by remember { mutableStateOf("") }
+    val subTaskList = remember { mutableStateListOf<String>() }
+    var newSubTask by remember { mutableStateOf("") }
+    val listState = rememberLazyListState()
+
+    val task = TaskTable(
+        title = titleField.value,
+        type = selectedType,
+        date = selectedDate,
+        progress = 0f,
+        description = descriptionField.value,
+        state = "To do",
+        specificTasksToDo = subTaskList,
+        specificTasksDone = emptyList(),
+        isCompleted = false,
+    )
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -88,108 +90,216 @@ fun NewTaskScreen() {
                 .padding(innerPadding)
                 .fillMaxSize(), color = Color(0xFFFAFAFA)
         ) {
-            Column(
-                modifier = Modifier.verticalScroll(rememberScrollState())
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize()
             ) {
-                GenericTopAppBar(
-                    title = "New Task",
-                    leftIcon = Icons.AutoMirrored.Filled.ArrowBack,
-                    rightIcon = Icons.Default.Save,
-                )
+                // Sección del título
+                item {
+                    GenericTopAppBar(
+                        title = "New Task",
+                        leftIcon = Icons.AutoMirrored.Filled.ArrowBack,
+                        rightIcon = Icons.Default.Save,
+                        onLeftIconClick = {navController.popBackStack()},
+                        onRightIconClick = {
+                            Log.d("NewTaskScreen", "Title: ${titleField.value}" +
+                                    "Description: ${descriptionField.value}" +
+                                    "showDatePicker: $showDatePicker" +
+                                    "selectedDate: $selectedDate" +
+                                    "selectedType: $selectedType" +
+                                    "selectedReminder: $selectedReminder" +
+                                    "subTaskList: $subTaskList")
 
-                TextFieldHint(
-                    hint = "Title",
-                    onEnterPressed = {
-                        firstField.value = it
-                        secondFocusRequester.requestFocus()
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .focusRequester(firstFocusRequester)
-                )
+                            newTaskViewModel.addTask(task)
+                            navController.popBackStack()
+                        }
 
-                GenericConfigurationRow(
-                    title = "Due Date",
-                    modifier = Modifier.padding(horizontal = 5.dp),
-                    leftItem = {
-                        if (selectedDate.isEmpty()) {
-                            Icon(
-                                imageVector = Icons.Filled.CalendarToday,
-                                contentDescription = "Left Icon",
-                                tint = Color(0xFF021D23),
-                            )
-                        } else {
-                            Text(
-                                text = selectedDate,
-                                fontFamily = dmSansFamily,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                            )
-                        }
-                    },
-                    onLeftIconClick = {
-                        showDatePicker = true
-                    }
-                )
-                if (showDatePicker) {
-                    DatePickerDialogWidget(
-                        onDismissRequest = { showDatePicker = false },
-                        selectedDate = {
-                            selectedDate = it
-                            showDatePicker = false
-                        }
+                    )
+
+                    TextFieldHint(
+                        hint = "Title",
+                        onEnterPressed = {
+                            titleField.value = it
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
                     )
                 }
-                GenericConfigurationRow(
-                    title = "Add to list",
-                    modifier = Modifier.padding(horizontal = 5.dp),
-                    leftItem = {
-                        GenericDropDownMenu(
-                            options = listOf("Personal", "Work", "Other"),
-                            selectedOption = selectedType.ifEmpty { "Personal" },
-                            onOptionSelected = { selectedType = it }
+
+                // Configuración de la fecha
+                item {
+                    GenericConfigurationRow(
+                        title = "Due Date",
+                        modifier = Modifier.padding(horizontal = 5.dp),
+                        leftItem = {
+                            if (selectedDate.isEmpty()) {
+                                Icon(
+                                    imageVector = Icons.Filled.CalendarToday,
+                                    contentDescription = "Left Icon",
+                                    tint = Color(0xFF021D23),
+                                )
+                            } else {
+                                Text(
+                                    text = selectedDate,
+                                    fontFamily = dmSansFamily,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                )
+                            }
+                        },
+                        onLeftIconClick = {
+                            showDatePicker = true
+                        }
+                    )
+                    if (showDatePicker) {
+                        DatePickerDialogWidget(
+                            onDismissRequest = { showDatePicker = false },
+                            selectedDate = {
+                                selectedDate = it
+                                showDatePicker = false
+                            }
                         )
-                    },
-                    onLeftIconClick = {}
-                )
-                GenericConfigurationRow(
-                    title = "Reminder",
-                    modifier = Modifier.padding(horizontal = 5.dp),
-                    leftItem = {
-                        GenericDropDownMenu(
-                            options = listOf("None", "Yes"),
-                            selectedOption = selectedReminder.ifEmpty { "None" },
-                            onOptionSelected = { selectedReminder = it }
+                    }
+                }
+
+                // Sección de listas y recordatorios
+                item {
+                    GenericConfigurationRow(
+                        title = "Add to list",
+                        modifier = Modifier.padding(horizontal = 5.dp),
+                        leftItem = {
+                            GenericDropDownMenu(
+                                options = listOf("Personal", "Work", "Other"),
+                                selectedOption = selectedType.ifEmpty { "Personal" },
+                                onOptionSelected = { selectedType = it }
+                            )
+                        },
+                        onLeftIconClick = {}
+                    )
+                    GenericConfigurationRow(
+                        title = "Reminder",
+                        modifier = Modifier.padding(horizontal = 5.dp),
+                        leftItem = {
+                            GenericDropDownMenu(
+                                options = listOf("None", "Yes"),
+                                selectedOption = selectedReminder.ifEmpty { "None" },
+                                onOptionSelected = { selectedReminder = it }
+                            )
+                        },
+                        onLeftIconClick = {}
+                    )
+
+                    TextFieldHint(
+                        hint = "Description",
+                        onEnterPressed = {
+                            descriptionField.value = it
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp),
+                        height = 150.dp
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Text(
+                        modifier = Modifier.padding(horizontal = 10.dp),
+                        text = "Subtasks",
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp,
+                        color = Color(0xFF055062),
+                    )
+                }
+
+                // Subtasks list
+                items(subTaskList) { subTask ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    ) {
+                        Checkbox(
+                            checked = false,
+                            onCheckedChange = {} // Puedes agregar lógica aquí
                         )
-                    },
-                    onLeftIconClick = {}
-                )
+                        Text(
+                            text = subTask,
+                            modifier = Modifier.padding(start = 8.dp),
+                            fontSize = 16.sp,
+                            color = Color(0xFF055062)
+                        )
+                    }
+                }
 
-                TextFieldHint(
-                    hint = "Description",
-                    onEnterPressed = {
-                        firstField.value = it
-                        secondFocusRequester.requestFocus()
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .focusRequester(firstFocusRequester),
-                    height = 150.dp
-                )
-                Spacer(modifier = Modifier.height(10.dp))
+                // Campo para añadir subtareas
+                item {
+                    val focusRequester = remember { FocusRequester() }
+                    val keyboardController = LocalSoftwareKeyboardController.current
 
-                Text(
-                    modifier = Modifier.padding(horizontal = 10.dp),
-                    text = "Subtasks",
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp,
-                    color = Color(0xFF055062),
-                )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    ) {
+                        Checkbox(
+                            checked = false,
+                            onCheckedChange = {}
+                        )
+                        TextField(
+                            value = newSubTask,
+                            onValueChange = { newSubTask = it },
+                            placeholder = {
+                                Text(
+                                    text = "+ add a new one",
+                                    color = Color(0xFF9E9E9E)
+                                )
+                            },
+                            colors = TextFieldDefaults.colors(
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedContainerColor = Color.Transparent,
+                                cursorColor = Color(0xFF055062),
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent
+                            ),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    if (newSubTask.isNotEmpty()) {
+                                        subTaskList.add(newSubTask)
+                                        newSubTask = ""
+                                        focusRequester.requestFocus()
+                                    }
+                                }
+                            ),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 8.dp)
+                                .focusRequester(focusRequester)
+                        )
+                    }
 
+                    LaunchedEffect(Unit) {
+                        focusRequester.requestFocus()
+                    }
+                }
+            }
+
+            // Scroll automático al final al agregar una nueva subtarea
+            LaunchedEffect(subTaskList.size) {
+                if (subTaskList.isNotEmpty()) {
+                    listState.animateScrollToItem(subTaskList.size)
+                }
             }
         }
     }
 }
+
+
+
+
+
 
 @Composable
 fun GenericDropDownMenu(
