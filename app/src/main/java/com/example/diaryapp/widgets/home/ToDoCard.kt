@@ -29,32 +29,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.diaryapp.data.ToDoItem
+import com.example.diaryapp.model.TaskTable
 import com.example.diaryapp.ui.theme.dmSansFamily
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ToDoCard(
-    item: ToDoItem,
-    onDragStart: (String) -> Unit = {}
+    item: TaskTable,
+    modifier: Modifier = Modifier
 ) {
     val (cardColor, textColor) = when (item.type) {
-        "Project" -> Pair(Color(0xFFFFFFFF), Color(0xFF074F60))
-        "Hobbies" -> Pair(Color(0xFFFFAE47), Color(0xFFFAFAFA))
-        else -> Pair(Color(0xFF074F60), Color(0xFFFAFAFA))
-    }
-
-    val modifier = Modifier.dragAndDropSource {
-        detectTapGestures(onLongPress = {
-            // Genera dinámicamente los datos a transferir
-            val dataToTransfer = "title=${item.title};type=${item.type};date=${item.date};progress=${item.progress}"
-            Log.d("ToDoCard", "Arrastrando datos: $dataToTransfer")
-            onDragStart(dataToTransfer)
-            startTransfer(
-                DragAndDropTransferData(
-                    ClipData.newPlainText("Card Data", dataToTransfer)
-                )
-            )
-        })
+        "Work" -> Pair(Color(0xFF074F60), Color(0xFFFAFAFA))
+        "Personal" -> Pair(Color(0xFFFFAE47), Color(0xFFFAFAFA))
+        else -> Pair(Color(0xFFFFFFFF), Color(0xFF074F60))
     }
 
     Card(

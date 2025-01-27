@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import java.util.UUID
 
 @Dao
 interface TaskDao {
@@ -28,5 +29,12 @@ interface TaskDao {
 
     @Delete
     suspend fun deleteTask(task: TaskTable)
+
+    @Query("DELETE from task_tbl where task_id =:id")
+    suspend fun deleteTaskById(id: String)
+
+    @Query("UPDATE task_tbl SET state = :newState WHERE task_id = :taskId")
+    suspend fun updateTaskState(taskId: String, newState: String)
+
 
 }

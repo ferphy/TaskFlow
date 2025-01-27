@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,10 +36,30 @@ class HomeViewModel @Inject constructor(private val taskRepository: TaskReposito
         }
     }
 
+    private val _selectedTask = MutableStateFlow<TaskTable?>(null)
+    val selectedTask: StateFlow<TaskTable?> = _selectedTask
+
+    fun getTaskById(id: String) {
+        viewModelScope.launch {
+            _selectedTask.value = taskRepository.getTaskById(id).firstOrNull()
+        }
+    }
+
     fun addTask(task: TaskTable) = viewModelScope.launch { taskRepository.insertTask(task) }
     fun updateTask(task: TaskTable) = viewModelScope.launch { taskRepository.updateTask(task) }
     fun removeTask(task: TaskTable) = viewModelScope.launch { taskRepository.deleteTask(task) }
     fun removeAllTasks() = viewModelScope.launch { taskRepository.deleteAllTasks()}
-    fun getTaskById(id: String) = viewModelScope.launch { taskRepository.getTaskById(id) }
+    private fun changeTaskState(taskId: String, newState: String) = viewModelScope.launch { taskRepository.changeTaskState(taskId, newState) }
+    fun deleteTaskById(id: String) = viewModelScope.launch { taskRepository.deleteTaskById(id) }
+
+
+    fun handleDrop(taskId: String, newState: String) {
+        viewModelScope.launch {
+            val task = taskRepository.getTaskById(taskId).firstOrNull()
+            if (task != null) {
+                changeTaskState(taskId, newState)
+            }
+        }
+    }
 
 }
