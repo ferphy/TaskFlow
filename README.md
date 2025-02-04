@@ -21,14 +21,11 @@ TaskFlow is a mobile application designed to help you efficiently organize your 
 ### Home Screen
 <img src="app/src/main/res/drawable/homescreen.png" width="400" alt="Home Screen">
 
-### Detail Screen
+### Task Details Screen
 <img src="app/src/main/res/drawable/detailscreen.png" width="400" alt="Detail Screen">
 
-### Search Screen
-<img src="app/src/main/res/drawable/searchscreen.png" width="400" alt="Search Screen">
-
-### Grocery Screen
-<img src="app/src/main/res/drawable/groceryscreen.png" width="400" alt="Grocery Screen">
+### New Task Screen
+<img src="app/src/main/res/drawable/newrtaskscreen.png" width="400" alt="Search Screen">
 
 </div>
 ---
