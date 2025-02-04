@@ -1,42 +1,67 @@
 # 🎯 **TaskFlow**
 
-TaskFlow es una aplicación móvil diseñada para ayudarte a organizar tus tareas y subtareas de manera eficiente. Puedes añadir tareas principales, gestionar subtareas, y marcar tus tareas como completadas, todo con una interfaz limpia y minimalista.
+TaskFlow is a mobile application designed to help you efficiently organize your tasks and subtasks. You can add main tasks, manage subtasks, and mark your tasks as completed—all with a clean and minimalist interface.
 
 ---
 
-## 🚀 **Características**
+## 🚀 **Features**
 
-- 📋 **Gestión de subtareas**: Añade, elimina y marca subtareas como completadas.
-- ➕ **Añadir nuevas tareas**: Pulsa en `+ add a new one` para agregar nuevas subtareas a tu lista.
-- 🎨 **Diseño intuitivo**: Interfaz simple y fácil de usar, con animaciones suaves.
-- 🌙 **Soporte para temas claros y oscuros**: Perfecta para cualquier hora del día.
-- ✨ **Personalización de listas**: Crea listas específicas como "Personal", "Trabajo" o "Otros".
-
----
-
-## 📸 **Capturas de Pantalla**
-
-<img src="screenshot1.png" width="300"> <img src="screenshot2.png" width="300">
+- 📋 **Subtask Management**: Add, delete, and mark subtasks as completed.
+- ➕ **Add New Tasks**: Tap on `+ add a new one` to add new subtasks to your list.
+- 🎨 **Intuitive Design**: A simple and easy-to-use interface with smooth animations.
+- 🌙 **Light and Dark Mode Support**: Perfect for any time of day.
+- ✨ **List Customization**: Create specific lists such as "Personal", "Work", or "Others".
 
 ---
 
-## 📲 **Instalación**
+## 📸 **Screenshots**
 
-1. Clona este repositorio:
+<div align="center">
+
+### Home Screen
+<img src="app/src/main/res/drawable/homescreen.png" width="400" alt="Home Screen">
+
+### Detail Screen
+<img src="app/src/main/res/drawable/detailscreen.png" width="400" alt="Detail Screen">
+
+### Search Screen
+<img src="app/src/main/res/drawable/searchscreen.png" width="400" alt="Search Screen">
+
+### Grocery Screen
+<img src="app/src/main/res/drawable/groceryscreen.png" width="400" alt="Grocery Screen">
+
+</div>
+---
+
+## 📲 **Installation**
+
+1. Clone this repository:
 
    ```bash
-   git clone https://github.com/tu-usuario/diary-app.git
-2. Abre el proyecto en Android Studio.
-3. Asegúrate de tener instaladas las dependencias de Jetpack Compose y Material Design 3.
-4. Compila y ejecuta el proyecto en tu emulador o dispositivo físico.
+   git clone https://github.com/your-username/diary-app.git
+   ```
+2. Open the project in Android Studio.
+3. Ensure you have installed the dependencies for Jetpack Compose and Material Design 3.
+4. Build and run the project on your emulator or physical device.
 
-## 🛠️ **Tecnologías Usadas**
+---
 
-- **Kotlin**: Lenguaje principal para el desarrollo.
-- **Jetpack Compose**: Framework moderno para la interfaz de usuario.
-- **Material Design 3**: Para garantizar una experiencia de usuario uniforme.
+## 🛠️ **Technologies Used**
 
-## 📧 ** Contacto**
+- **Kotlin**: Main programming language for development (v2.0.0).
+- **Jetpack Compose**: Modern framework for building user interfaces declaratively, including tools like Activity Compose and Lifecycle ViewModel Compose.
+- **Material Design 3**: Ensures a uniform and modern user experience through consistent visual components.
+- **Android Gradle Plugin (AGP)**: Essential tool for compiling and packaging the application (v8.8.0).
+- **Coil Compose**: Library for efficiently loading images in Compose applications (v2.6.0).
+- **Hilt**: Dependency injection framework that simplifies instance management throughout the app (v2.51.1).
+- **Kotlin Coroutines**: Asynchronous and concurrent handling for background operations (v1.7.3).
+- **Kotlinx Serialization**: Provides serialization and deserialization of data, facilitating JSON handling (v1.6.3).
+- **AndroidX Core KTX and Lifecycle Runtime KTX**: Extension libraries that simplify Android development (v1.10.1 and v2.8.7, respectively).
+- **Navigation Compose**: Declarative navigation management between screens (v2.8.5).
 
-- **Creador**: Fernando González Laso
-- **Correo Electrónico:**: fernangl08@gmail.com
+---
+
+## 📧 **Contact**
+
+- **Creator**: Fernando González Laso
+- **Email**: fernangl08@gmail.com
