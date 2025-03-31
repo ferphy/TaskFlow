@@ -18,15 +18,11 @@ TaskFlow is a mobile application designed to help you efficiently organize your 
 
 <div align="center">
 
-### Home Screen
-<img src="app/src/main/res/drawable/homescreen.png" width="400" alt="Home Screen">
+### Home Screen Light Mode
+<img src="![Screenshot_20250331-194608](https://github.com/user-attachments/assets/08341e90-d55b-4969-898c-92f6d4557489)" width="400" alt="Home Screen">
 
-### Task Details Screen
-<img src="app/src/main/res/drawable/detailscreen.png" width="400" alt="Detail Screen">
-
-### New Task Screen
-<img src="app/src/main/res/drawable/newrtaskscreen.png" width="400" alt="Search Screen">
-
+### Home Screen Dark Mode
+<img src="![Screenshot_20250331-194601](https://github.com/user-attachments/assets/d8affd81-7619-41b2-a398-ae245b219fc3)" width="400" alt="Detail Screen">
 </div>
 ---
 
